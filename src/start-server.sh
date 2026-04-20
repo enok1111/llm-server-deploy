@@ -14,7 +14,7 @@ nohup "$SERVER_BIN" \
   -c 196608 \
   -ngl 99 \
   -fa 1 \
-  -np 2 \
+  -np 1 \
   -sm row \
   -ctk q4_0 \
   -ctv q4_0 \
