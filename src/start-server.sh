@@ -11,15 +11,17 @@ MODEL_PATH="$MODELS_DIR/$MODEL_FILENAME"
 
 nohup "$SERVER_BIN" \
   -m "$MODEL_PATH" \
-  -c "$CONTEXT_SIZE" \
+  -c 196608 \
   -ngl 99 \
   -fa 1 \
-  -ctk q8_0 \
-  -ctv q8_0 \
-  -t "$THREADS" \
-  -b "$BATCH_SIZE" \
-  -ub 512 \
-  --port "$PORT" \
+  -np 2 \
+  -sm row \
+  -ctk q4_0 \
+  -ctv q4_0 \
+  -t 16 \
+  -b 2048 \
+  -ub 2048 \
+  --port 8080 \
   --host 0.0.0.0 \
   > "$LOG_FILE" 2>&1 &
 
