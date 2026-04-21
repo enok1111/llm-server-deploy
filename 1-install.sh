@@ -2,8 +2,8 @@
 source "$(dirname "$0")/config.sh"
 
 echo "🛠️ [1/3] Instalando dependencias del sistema y CUDA Toolkit..."
-sudo apt-get update
-sudo apt-get install -y build-essential cmake git libcurl4-openssl-dev libssl-dev aria2 nvidia-cuda-toolkit
+apt-get update
+apt-get install -y build-essential cmake git libcurl4-openssl-dev libssl-dev aria2 nvidia-cuda-toolkit
 
 # Configurar rutas de CUDA para la compilación
 export PATH=/usr/local/cuda/bin:$PATH
