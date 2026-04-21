@@ -1,6 +1,6 @@
 #!/bin/bash
 # ==========================================
-# CONFIGURACIÓN GLOBAL DEL SERVIDOR
+# CONFIGURACIÓN GLOBAL DEL SERVIDOR (ORNSTEIN RYS)
 # ==========================================
 
 # Rutas principales (Automáticas)
@@ -9,15 +9,16 @@ MODELS_DIR="$BASE_DIR/models"
 LLAMA_DIR="$BASE_DIR/llama.cpp"
 LOG_FILE="$BASE_DIR/server.log"
 
-# Configuración del Modelo
-MODEL_URL="https://huggingface.co/HauhauCS/Qwen3.6-35B-A3B-Uncensored-HauhauCS-Aggressive/resolve/main/Qwen3.6-35B-A3B-Uncensored-HauhauCS-Aggressive-Q4_K_P.gguf?download=true"
-MODEL_FILENAME="Qwen35B.gguf"
+# Configuración del Modelo: Ornstein 3.6 35B RYS-SABER (Lógica duplicada + Uncensored)
+# Cuantización: Q4_K_M (Alta precisión, ~21GB de peso)
+MODEL_URL="https://huggingface.co/DJLougen/Ornstein3.6-35B-A3B-RYS-SABER-GGUF/resolve/main/Ornstein3.6-35B-A3B-RYS-SABER-Q4_K_M.gguf?download=true"
+MODEL_FILENAME="Ornstein-35B-RYS-SABER.gguf"
 
 # Parámetros de Inferencia (Optimizados para 2x RTX 3090 = 48GB VRAM)
-CONTEXT_SIZE=131072    # 131k de contexto
-THREADS=16             # Hilos de CPU (Igual a núcleos físicos)
-BATCH_SIZE=2048        # Tamaño del bloque de lectura
-PORT=8080              # Puerto interno (Clore lo mapeará a otro)
+CONTEXT_SIZE=196608    # 192k de contexto (Estable y masivo)
+THREADS=16             # Hilos de CPU (Núcleos físicos del Ryzen 9 3950X)
+BATCH_SIZE=2048        # Tamaño del bloque de lectura (Prompt Processing)
+PORT=8080              # Puerto interno
 
 # Monitor de Auto-Apagado
 IDLE_TIMEOUT=1800      # 30 minutos sin uso apaga el servidor
