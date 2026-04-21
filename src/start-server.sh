@@ -25,6 +25,7 @@ nohup "$SERVER_BIN" \
   -t "$THREADS" \
   -b "$BATCH_SIZE" \
   -ub "$BATCH_SIZE" \
+  --api-key "$API_KEY" \
   --port "$PORT" \
   --host 0.0.0.0 \
   > "$LOG_FILE" 2>&1 &

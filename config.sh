@@ -8,9 +8,10 @@ MODELS_DIR="$BASE_DIR/models"
 LLAMA_DIR="$BASE_DIR/llama.cpp"
 LOG_FILE="$BASE_DIR/server.log"
 
-# Modelo Ornstein 3.6 35B RYS-SABER (Q4_K_M)
-MODEL_URL="https://huggingface.co/DJLougen/Ornstein3.6-35B-A3B-RYS-SABER-GGUF/resolve/main/Ornstein3.6-35B-A3B-RYS-SABER-Q4_K_M.gguf?download=true"
-MODEL_FILENAME="Ornstein-35B-RYS-SABER.gguf"
+# Modelo Qwen 3.6 35B Uncensored (Q4_K_P)
+MODEL_URL="https://huggingface.co/HauhauCS/Qwen3.6-35B-A3B-Uncensored-HauhauCS-Aggressive/resolve/main/Qwen3.6-35B-A3B-Uncensored-HauhauCS-Aggressive-Q4_K_P.gguf?download=true"
+MODEL_FILENAME="Qwen35B.gguf"
+API_KEY="sk-1234567890"
 
 # Parámetros para Single GPU (24GB) con Offload a RAM
 CONTEXT_SIZE=196608    # 192k de contexto

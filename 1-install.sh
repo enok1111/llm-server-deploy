@@ -9,18 +9,18 @@ apt-get install -y build-essential cmake git libcurl4-openssl-dev libssl-dev ari
 export PATH=/usr/local/cuda/bin:$PATH
 export LD_LIBRARY_PATH=/usr/local/cuda/lib64:$LD_LIBRARY_PATH
 
-echo "📥[2/3] Descargando y preparando el fork parcheado de llama.cpp..."
+echo "📥[2/3] Descargando y preparando llama.cpp..."
 cd "$BASE_DIR"
 
 # IMPORTANTE: Eliminamos el directorio anterior si existe 
-# para asegurar que descargamos el fork correcto y no usamos caché.
+# para asegurar que descargamos la versión correcta.
 if [ -d "$LLAMA_DIR" ]; then
-    echo "⚠️ Directorio antiguo detectado. Eliminando para clonar la versión parcheada..."
+    echo "⚠️ Directorio antiguo detectado. Eliminando..."
     rm -rf "$LLAMA_DIR"
 fi
 
-# Clonamos específicamente el fork de DJLougen y su rama rys-qwen35
-git clone -b rys-qwen35 https://github.com/DJLougen/llama.cpp "$LLAMA_DIR"
+# Clonamos la versión oficial
+git clone https://github.com/ggerganov/llama.cpp "$LLAMA_DIR"
 
 cd "$LLAMA_DIR"
 
