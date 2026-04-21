@@ -21,6 +21,7 @@ nohup "$SERVER_BIN" \
   -ub "$BATCH_SIZE" \
   --port "$PORT" \
   --host 0.0.0.0 \
+  --api-key "$API_KEY" \
   > "$LOG_FILE" 2>&1 &
 
 echo $! > "$BASE_DIR/server.pid"

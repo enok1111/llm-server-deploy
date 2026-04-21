@@ -17,5 +17,6 @@ CONTEXT_SIZE=196608    # 192k de contexto
 THREADS=12             # Hilos ajustados a los 12 núcleos físicos del Ryzen 3900
 BATCH_SIZE=1024        # Lote de ingesta seguro para 24GB VRAM
 PORT=8080
+API_KEY="master-api-key-enok1111"
 
 IDLE_TIMEOUT=1800
