@@ -5,34 +5,42 @@ Este repositorio es una solución de despliegue de alto rendimiento para servir 
 ## 🏗️ Arquitectura del Sistema
 
 El despliegue se divide en tres capas desacopladas gestionadas por scripts modulares:
-1.  **Capa de Entorno:** Aprovisionamiento de dependencias críticas (`nvcc`, `cmake`, `aria2`).
-2.  **Capa de Motor:** Compilación JIT de `llama.cpp` optimizada con flags `GGML_CUDA=ON`.
-3.  **Capa de Orquestación:** Gestión de procesos (`llama-server`) y watchdog de inactividad dinámico (`monitor.sh`).
+
+1. **Capa de Entorno:** Aprovisionamiento de dependencias críticas (`nvcc`, `cmake`, `aria2`).
+2. **Capa de Motor:** Compilación JIT de `llama.cpp` optimizada con flags `GGML_CUDA=ON`.
+3. **Capa de Orquestación:** Gestión de procesos (`llama-server`) y watchdog de inactividad dinámico (`monitor.sh`).
 
 ---
 
 ## ⚙️ Guía de Despliegue Avanzado
 
 ### 1. Clonación y Preparación
+
 ```bash
-git clone https://github.com/TU_USUARIO/llm-server-deploy.git
+git clone https://github.com/enok1111/llm-server-deploy.git
 cd llm-server-deploy && chmod +x *.sh src/*.sh
 ```
 
 ### 2. Compilación Optimizada
+
 El script `./1-install.sh` detecta automáticamente la topología de tu CPU y compila el motor con soporte para **Unified Memory y Peer-to-Peer** entre GPUs.
+
 ```bash
 ./1-install.sh
 ```
 
 ### 3. Ingesta de Datos (High-Speed)
+
 Utilizamos `aria2c` con segmentación de 16 conexiones para saturar el ancho de banda del datacenter.
+
 ```bash
 ./2-download.sh
 ```
 
 ### 4. Lanzamiento con Motor de Inferencia Optimizado
+
 El servidor arranca con las siguientes optimizaciones activas:
+
 - **Flash Attention (FA):** Reducción de la complejidad cuadrática en contextos largos.
 - **KV Cache Quantization (`q8_0`):** Mantenemos alta precisión en la ventana de 131k tokens sin desbordar la VRAM.
 - **Idle Watchdog:** Monitorización de slots HTTP para auto-terminación de instancia tras inactividad.
@@ -46,17 +54,21 @@ El servidor arranca con las siguientes optimizaciones activas:
 ## 📊 Diagnóstico y Rendimiento
 
 ### Monitoreo de VRAM y Balanceo
+
 Para verificar que el modelo está correctamente repartido entre los dispositivos CUDA:
+
 ```bash
 watch -n 1 nvidia-smi
 ```
 
 ### Análisis de Logs de Inferencia
+
 ```bash
 tail -f server.log | grep --line-buffered "slot"
 ```
 
 ### Estado del Vigilante (Watchdog)
+
 ```bash
 tail -f monitor.log
 ```
