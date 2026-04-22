@@ -11,7 +11,7 @@ MODEL_PATH="$MODELS_DIR/$MODEL_FILENAME"
 nohup "$SERVER_BIN" \
   -m "$MODEL_PATH" \
   -c "$CONTEXT_SIZE" \
-  -ngl 99 \
+  -ngl 80 \
   -fa 1 \
   --parallel 1 \
   -ctk q4_0 \
