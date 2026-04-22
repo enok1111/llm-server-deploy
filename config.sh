@@ -13,7 +13,7 @@ MODEL_URL="https://huggingface.co/Jackrong/Qwen3.6-27B-GGUF/resolve/main/Qwen3.6
 MODEL_FILENAME="Qwen3.6-27B.gguf"
 
 # Parámetros para Single GPU (24GB) con 192k de contexto
-CONTEXT_SIZE=262144    # 192k de contexto
+CONTEXT_SIZE=196608    # 192k de contexto
 THREADS=12             # Hilos ajustados a los 12 núcleos físicos del Ryzen 3900
 BATCH_SIZE=1024        # Lote de ingesta seguro para 24GB VRAM
 PORT=8080
