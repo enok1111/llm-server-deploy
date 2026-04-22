@@ -22,10 +22,6 @@ nohup "$SERVER_BIN" \
   --port "$PORT" \
   --host 0.0.0.0 \
   --api-key "$API_KEY" \
-  --temp "$TEMPERATURE" \
-  --top-p "$TOP_P" \
-  --top-k "$TOP_K" \
-  --min-p "$MIN_P" \
   > "$LOG_FILE" 2>&1 &
 
 echo $! > "$BASE_DIR/server.pid"
