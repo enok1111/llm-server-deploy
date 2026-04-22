@@ -11,7 +11,7 @@ MODEL_PATH="$MODELS_DIR/$MODEL_FILENAME"
 nohup "$SERVER_BIN" \
   -m "$MODEL_PATH" \
   -c "$CONTEXT_SIZE" \
-  -ngl 55 \
+  -ngl 99 \
   -fa 1 \
   --parallel 1 \
   -ctk q4_0 \
@@ -22,6 +22,10 @@ nohup "$SERVER_BIN" \
   --port "$PORT" \
   --host 0.0.0.0 \
   --api-key "$API_KEY" \
+  --temp "$TEMPERATURE" \
+  --top-p "$TOP_P" \
+  --top-k "$TOP_K" \
+  --min-p "$MIN_P" \
   > "$LOG_FILE" 2>&1 &
 
 echo $! > "$BASE_DIR/server.pid"
