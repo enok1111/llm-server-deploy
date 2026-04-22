@@ -1,6 +1,6 @@
 #!/bin/bash
 # ==========================================
-# CONFIGURACIÓN GLOBAL (SINGLE 3090 - QWEN 3.5 27B)
+# CONFIGURACIÓN GLOBAL (SINGLE 3090 - QWEN 3.6 27B)
 # ==========================================
 
 BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -8,9 +8,9 @@ MODELS_DIR="$BASE_DIR/models"
 LLAMA_DIR="$BASE_DIR/llama.cpp"
 LOG_FILE="$BASE_DIR/server.log"
 
-# Modelo Qwen 3.5 27B Uncensored Aggressive (Q4_K_M, ~16 GB)
-MODEL_URL="https://huggingface.co/HauhauCS/Qwen3.5-27B-Uncensored-HauhauCS-Aggressive/resolve/main/Qwen3.5-27B-Uncensored-HauhauCS-Aggressive-Q4_K_M.gguf?download=true"
-MODEL_FILENAME="Qwen3.5-27B-Aggressive.gguf"
+# Modelo Qwen 3.6 27B (Q4_K_M, ~16 GB)
+MODEL_URL="https://huggingface.co/Jackrong/Qwen3.6-27B-GGUF/resolve/main/Qwen3.6-27B-Q4_K_M.gguf?download=true"
+MODEL_FILENAME="Qwen3.6-27B.gguf"
 
 # Parámetros para Single GPU (24GB) con 192k de contexto
 CONTEXT_SIZE=196608    # 192k de contexto
