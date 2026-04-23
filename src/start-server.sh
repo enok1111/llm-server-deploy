@@ -1,6 +1,6 @@
 #!/bin/bash
 # =============================================
-# Script optimizado para Qwen3.6-27B en RTX 3090
+# Script optimizado para Qwen 2.7B / 27B
 # =============================================
 
 source "$(dirname "$0")/../config.sh"
@@ -9,17 +9,16 @@ export PATH=/usr/local/cuda/bin:$PATH
 export LD_LIBRARY_PATH=/usr/local/cuda/lib64:$LD_LIBRARY_PATH
 export GGML_CUDA_GRAPH_OPT=1
 
+# Deshabilitar rotación de tensores si no es necesaria
 export LLAMA_ATTN_ROT_DISABLE=1 
 
-SERVER_BIN="$LLAMA_DIR/build/bin/llama-server"
-MODEL_PATH="$MODELS_DIR/$MODEL_FILENAME"
-
-echo "🚀 Iniciando llama-server con modelo: $MODEL_FILENAME"
+echo "🚀 Iniciando servidor con: $SERVER_BIN"
+echo "📦 Modelo: $MODEL_FILENAME"
 
 nohup "$SERVER_BIN" \
-  -m "$MODEL_PATH" \
+  -m "$MODELS_DIR/$MODEL_FILENAME" \
   -c "$CONTEXT_SIZE" \
-  -ngl 80 \
+  -ngl 99 \
   -np 1 \
   --flash-attn on \
   --cache-type-k q4_0 \

@@ -1,34 +1,28 @@
 #!/bin/bash
 source "$(dirname "$0")/config.sh"
 
-echo "🛠️ [1/3] Instalando dependencias del sistema y CUDA Toolkit..."
-apt-get update
-apt-get install -y build-essential cmake git libcurl4-openssl-dev libssl-dev aria2 nvidia-cuda-toolkit
+echo "🔍 Detectando entorno de ejecución..."
 
-# Configurar rutas de CUDA para la compilación
-export PATH=/usr/local/cuda/bin:$PATH
-export LD_LIBRARY_PATH=/usr/local/cuda/lib64:$LD_LIBRARY_PATH
+if [ -f "/app/llama-server" ]; then
+    echo "🐳 Entorno Docker (Clore.ai) detectado. Omitiendo compilación."
+    echo "📦 Instalando solo herramientas de soporte (aria2, procps)..."
+    apt-get update && apt-get install -y aria2 procps
+else
+    echo "🖥️ Entorno Bare Metal detectado. Iniciando instalación completa..."
+    apt-get update
+    apt-get install -y build-essential cmake git libcurl4-openssl-dev libssl-dev aria2 nvidia-cuda-toolkit procps
 
-echo "📥[2/3] Descargando y preparando llama.cpp..."
-cd "$BASE_DIR"
+    export PATH=/usr/local/cuda/bin:$PATH
+    export LD_LIBRARY_PATH=/usr/local/cuda/lib64:$LD_LIBRARY_PATH
 
-# IMPORTANTE: Eliminamos el directorio anterior si existe 
-# para asegurar que descargamos la versión correcta.
-if [ -d "$LLAMA_DIR" ]; then
-    echo "⚠️ Directorio antiguo detectado. Eliminando..."
-    rm -rf "$LLAMA_DIR"
+    echo "📥 Descargando y preparando llama.cpp..."
+    if [ -d "$LLAMA_DIR" ]; then rm -rf "$LLAMA_DIR"; fi
+    git clone https://github.com/ggerganov/llama.cpp "$LLAMA_DIR"
+    cd "$LLAMA_DIR" && mkdir build && cd build
+    
+    echo "🏗️ Compilando para NVIDIA CUDA..."
+    cmake .. -DGGML_CUDA=ON
+    cmake --build . --config Release -j $(nproc)
 fi
 
-# Clonamos la versión oficial
-git clone https://github.com/ggerganov/llama.cpp "$LLAMA_DIR"
-
-cd "$LLAMA_DIR"
-
-# Crear directorio de compilación
-mkdir build && cd build
-
-echo "🏗️ [3/3] Compilando para NVIDIA CUDA (Multi-GPU)..."
-cmake .. -DGGML_CUDA=ON
-cmake --build . --config Release -j $(nproc)
-
-echo "✅ Instalación y compilación completadas con éxito."
+echo "✅ Preparación completada."

@@ -1,93 +1,63 @@
-# 🚀 LLM Server Deploy Pro (Qwen 35B / llama.cpp)
+# 🚀 LLM Server Deploy Pro
 
-Este repositorio es una solución de despliegue de alto rendimiento para servir modelos de lenguaje masivos con soporte nativo para infraestructuras Multi-GPU (NVIDIA CUDA). Optimizado específicamente para configuraciones de alta densidad como 2x RTX 3090/4090 (48GB VRAM).
+Despliegue optimizado de modelos **Qwen 27B** con **llama.cpp**. Este repositorio detecta automáticamente si estás en una instancia limpia (Bare Metal) o en una instancia de **Clore.ai** con la imagen oficial de `llama.cpp`.
 
-## 🏗️ Arquitectura del Sistema
+## 🏗️ Flujo de Trabajo en Clore.ai
 
-El despliegue se divide en tres capas desacopladas gestionadas por scripts modulares:
+Si estás usando Clore.ai, sigue estos pasos para un despliegue en menos de 5 minutos:
 
-1. **Capa de Entorno:** Aprovisionamiento de dependencias críticas (`nvcc`, `cmake`, `aria2`).
-2. **Capa de Motor:** Compilación JIT de `llama.cpp` optimizada con flags `GGML_CUDA=ON`.
-3. **Capa de Orquestación:** Gestión de procesos (`llama-server`) y watchdog de inactividad dinámico (`monitor.sh`).
-
----
-
-## ⚙️ Guía de Despliegue Avanzado
-
-### 1. Clonación y Preparación
-
-```bash
-git clone https://github.com/enok1111/llm-server-deploy.git
-cd llm-server-deploy && chmod +x *.sh src/*.sh
-```
-
-### 2. Compilación Optimizada
-
-El script `./1-install.sh` detecta automáticamente la topología de tu CPU y compila el motor con soporte para **Unified Memory y Peer-to-Peer** entre GPUs.
-
-```bash
-./1-install.sh
-```
-
-### 3. Ingesta de Datos (High-Speed)
-
-Utilizamos `aria2c` con segmentación de 16 conexiones para saturar el ancho de banda del datacenter.
-
-```bash
-./2-download.sh
-```
-
-### 4. Lanzamiento con Motor de Inferencia Optimizado
-
-El servidor arranca con las siguientes optimizaciones activas:
-
-- **Flash Attention (FA):** Reducción de la complejidad cuadrática en contextos largos.
-- **KV Cache Quantization (`q8_0`):** Mantenemos alta precisión en la ventana de 131k tokens sin desbordar la VRAM.
-- **Idle Watchdog:** Monitorización de slots HTTP para auto-terminación de instancia tras inactividad.
-
-```bash
-./3-run.sh
-```
+1.  **Crear Instancia:** Selecciona la imagen `ghcr.io/ggml-org/llama.cpp:server-cuda13`.
+2.  **Conectar y Clonar:**
+    ```bash
+    git clone https://github.com/enok1111/llm-server-deploy.git
+    cd llm-server-deploy && chmod +x *.sh src/*.sh
+    ```
+3.  **Preparar Entorno:** Instala solo las herramientas de descarga y monitoreo (omite la compilación).
+    ```bash
+    ./1-install.sh
+    ```
+4.  **Descargar Modelo:**
+    ```bash
+    ./2-download.sh
+    ```
+5.  **Lanzar Servidor:**
+    ```bash
+    ./3-run.sh
+    ```
 
 ---
 
-## 📊 Diagnóstico y Rendimiento
+## ✨ Características Técnicas
 
-### Monitoreo de VRAM y Balanceo
-
-Para verificar que el modelo está correctamente repartido entre los dispositivos CUDA:
-
-```bash
-watch -n 1 nvidia-smi
-```
-
-### Análisis de Logs de Inferencia
-
-```bash
-tail -f server.log | grep --line-buffered "slot"
-```
-
-### Estado del Vigilante (Watchdog)
-
-```bash
-tail -f monitor.log
-```
+- **🔄 Detección Automática:** Los scripts detectan el binario `/app/llama-server` de la imagen Docker para evitar compilaciones innecesarias.
+- **🚀 Ultra-Contexto:** Configurado por defecto para **256k tokens** con Flash Attention.
+- **⏱️ Watchdog Inteligente:** Apagado automático del servidor tras inactividad para ahorrar crédito en Clore.ai.
+- **⚡ Descarga Acelerada:** Uso de `aria2c` con 16 conexiones simultáneas.
 
 ---
 
-## 🛠️ Ajustes de Ingeniería (config.sh)
+## ⚙️ Configuración (`config.sh`)
 
-| Parámetro | Descripción | Valor Recomendado |
+Puedes personalizar los parámetros clave antes de ejecutar los scripts:
+
+| Variable | Propósito | Valor por Defecto |
 | :--- | :--- | :--- |
-| `CONTEXT_SIZE` | Ventana de contexto máxima | 131072 (128k) |
-| `THREADS` | Hilos de CPU (OMP_NUM_THREADS) | Núcleos físicos |
-| `IDLE_TIMEOUT` | Tiempo para auto-apagado | 1800 (30 min) |
-| `BATCH_SIZE` | Procesamiento paralelo de tokens | 2048 |
+| `CONTEXT_SIZE` | Ventana de contexto máxima | 262144 (256k) |
+| `API_KEY` | Clave de seguridad de la API | `master-api-key-enok1111` |
+| `IDLE_TIMEOUT` | Tiempo de auto-apagado (segundos) | 1800 (30 min) |
 
 ---
 
-## 🛡️ Resolución de Problemas (Troubleshooting)
+## 💡 Recomendaciones de Hardware (Clore.ai)
 
-- **CUDA_ERROR_OUT_OF_MEMORY**: El modelo + contexto excede la VRAM. Reduce `CONTEXT_SIZE` o `BATCH_SIZE` en `config.sh`.
-- **Baja Velocidad de Generación**: Verifica que las GPUs no estén en slots PCIe limitados (x1 o x4). Usa `lspci -vv` para confirmar el ancho de banda.
-- **Limpieza Manual**: En caso de colisión de puertos, usa `pkill -9 llama-server`.
+- **GPU:** Mínimo **1x RTX 3090/4090** (24GB VRAM) para el modelo Q4_K_M.
+- **Recomendado:** **2x RTX 3090/4090** para manejar contextos largos sin degradación de velocidad.
+- **Drivers:** La imagen CUDA 13 requiere hosts con drivers **570.xx+**.
+
+---
+
+## 📊 Mantenimiento y Logs
+
+- **Ver Inferencia:** `tail -f server.log`
+- **Ver Monitor:** `tail -f monitor.log`
+- **Detener Servidor:** `pkill -f llama-server && pkill -f monitor.sh`
