@@ -11,6 +11,9 @@ LOG_FILE="$BASE_DIR/server.log"
 MODEL_URL="https://huggingface.co/unsloth/Qwen3.6-27B-GGUF/resolve/main/Qwen3.6-27B-Q4_K_M.gguf?download=true"
 MODEL_FILENAME="Qwen3.6-27B.gguf"
 
+VISION_MODEL_URL="https://huggingface.co/unsloth/Qwen3.6-27B-GGUF/resolve/main/mmproj-BF16.gguf?download=true"
+VISION_MODEL_FILENAME="mmproj-BF16.gguf"
+
 CONTEXT_SIZE=262144
 BATCH_SIZE=1024
 PORT=8080

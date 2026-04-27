@@ -15,8 +15,21 @@ export LLAMA_ATTN_ROT_DISABLE=1
 echo "🚀 Iniciando servidor con: $SERVER_BIN"
 echo "📦 Modelo: $MODEL_FILENAME"
 
+VISION_ARGS=""
+if [ "$USE_VISION" = true ]; then
+    if [ -f "$MODELS_DIR/$VISION_MODEL_FILENAME" ]; then
+        echo "👁️ Cargando proyector de visión: $VISION_MODEL_FILENAME"
+        VISION_ARGS="--mmproj $MODELS_DIR/$VISION_MODEL_FILENAME"
+    else
+        echo "⚠️ Error: No se encuentra el archivo de visión $VISION_MODEL_FILENAME"
+        echo "Ejecuta ./2-download.sh --vision para descargarlo."
+        exit 1
+    fi
+fi
+
 nohup "$SERVER_BIN" \
   -m "$MODELS_DIR/$MODEL_FILENAME" \
+  $VISION_ARGS \
   -c "$CONTEXT_SIZE" \
   -ngl 99 \
   -np 1 \

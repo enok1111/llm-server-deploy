@@ -10,6 +10,13 @@ echo "🚀 Arrancando Servidor LLM..."
 chmod +x "$BASE_DIR/src/start-server.sh"
 chmod +x "$BASE_DIR/src/monitor.sh"
 
+# Detectar flag de visión
+export USE_VISION=false
+if [[ "$*" == *"--vision"* ]]; then
+    echo "👁️ Modo visión activado"
+    export USE_VISION=true
+fi
+
 # Iniciar servidor
 bash "$BASE_DIR/src/start-server.sh"
 
