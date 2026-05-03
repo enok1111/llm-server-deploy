@@ -14,8 +14,8 @@ MODEL_FILENAME="Qwen3.6-27B.gguf"
 VISION_MODEL_URL="https://huggingface.co/unsloth/Qwen3.6-27B-GGUF/resolve/main/mmproj-BF16.gguf?download=true"
 VISION_MODEL_FILENAME="mmproj-BF16.gguf"
 
-CONTEXT_SIZE=262144
-BATCH_SIZE=1024
+CONTEXT_SIZE=196608
+BATCH_SIZE=2048
 PORT=8080
 API_KEY="master-api-key-enok1111"
 

@@ -6,21 +6,29 @@ Despliegue optimizado de modelos **Qwen 27B** con **llama.cpp**. Este repositori
 
 Si estás usando Clore.ai, sigue estos pasos para un despliegue en menos de 5 minutos:
 
-1.  **Crear Instancia:** Selecciona la imagen `ghcr.io/ggml-org/llama.cpp:server-cuda13`.
-2.  **Conectar y Clonar:**
+1. **Crear Instancia:** Selecciona la imagen `ghcr.io/ggml-org/llama.cpp:server-cuda13`.
+2. **Conectar y Clonar:**
+
     ```bash
-    git clone https://github.com/enok1111/llm-server-deploy.git
-    cd llm-server-deploy && chmod +x *.sh src/*.sh
+    git clone https://github.com/enok1111/llm-server-deploy.git &&
+    cd llm-server-deploy &&
+    git checkout single-3090-qwen3.6-27b
     ```
-3.  **Preparar Entorno:** Instala solo las herramientas de descarga y monitoreo (omite la compilación).
+
+3. **Preparar Entorno:** Instala solo las herramientas de descarga y monitoreo (omite la compilación).
+
     ```bash
     ./1-install.sh
     ```
-4.  **Descargar Modelo:**
+
+4. **Descargar Modelo:**
+
     ```bash
     ./2-download.sh
     ```
-5.  **Lanzar Servidor:**
+
+5. **Lanzar Servidor:**
+
     ```bash
     ./3-run.sh
     ```

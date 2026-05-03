@@ -42,6 +42,7 @@ nohup "$SERVER_BIN" \
   --host 0.0.0.0 \
   --api-key "$API_KEY" \
   --no-webui \
+  --jinja \
   > "$LOG_FILE" 2>&1 &
   
 echo $! > "$BASE_DIR/server.pid"
