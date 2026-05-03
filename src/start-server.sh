@@ -30,7 +30,7 @@ fi
 nohup "$SERVER_BIN" \
   -m "$MODELS_DIR/$MODEL_FILENAME" \
   $VISION_ARGS \
-  -c "$CONTEXT_SIZE" \
+  -c "$CXT_SIZE" \
   -ngl 99 \
   -np 1 \
   --flash-attn on \
@@ -42,6 +42,8 @@ nohup "$SERVER_BIN" \
   --host 0.0.0.0 \
   --api-key "$API_KEY" \
   --no-webui \
+  --swa-full  \
+  --ctx-checkpoints "$CTX_CHECKPOINTS" \
   --jinja \
   > "$LOG_FILE" 2>&1 &
   
