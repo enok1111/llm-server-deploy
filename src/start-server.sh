@@ -48,7 +48,6 @@ nohup "$SERVER_BIN" \
   --repeat-penalty "$REPEAT_PENALTY" \
   --no-webui \
   --jinja \
-  --swa-full \
   --ctx-checkpoints "$CTX_CHECKPOINTS" \
   > "$LOG_FILE" 2>&1 &
   
