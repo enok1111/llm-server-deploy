@@ -2,57 +2,62 @@
 
 Despliegue optimizado de modelos **Qwen 27B** con **llama.cpp**. Este repositorio detecta automáticamente si estás en una instancia limpia (Bare Metal) o en una instancia de **Clore.ai** con la imagen oficial de `llama.cpp`.
 
-## 🏗️ Flujo de Trabajo en Clore.ai
+## 🚀 Uso Unificado (Unified Workflow)
 
-Si estás usando Clore.ai, sigue estos pasos para un despliegue en menos de 5 minutos:
+Este repositorio ahora soporta múltiples perfiles de modelo siguiendo las mejores prácticas **DRY**.
 
-1. **Crear Instancia:** Selecciona la imagen `ghcr.io/ggml-org/llama.cpp:server-cuda13`.
-2. **Conectar y Clonar:**
+### 1. Preparar Entorno (Solo una vez)
+Detecta automáticamente tu OS (Linux/CUDA o Mac/Metal) y compila/instala lo necesario.
+```bash
+./1-install.sh
+```
 
-    ```bash
-    git clone https://github.com/enok1111/llm-server-deploy.git &&
-    cd llm-server-deploy &&
-    git checkout single-3090-qwen3.6-27b
-    ```
+### 2. Descargar Modelos
+Puedes descargar el modelo estándar o el perfil VL (Visión).
+*   **Estándar (Qwen 27B):** `./2-download.sh`
+*   **Visión (Qwen2.5-VL 3B):** `./2-download.sh --vl`
 
-3. **Preparar Entorno:** Instala solo las herramientas de descarga y monitoreo (omite la compilación).
-
-    ```bash
-    ./1-install.sh
-    ```
-
-4. **Descargar Modelo:**
-
-    ```bash
-    ./2-download.sh
-    ```
-
-5. **Lanzar Servidor:**
-
-    ```bash
-    ./3-run.sh
-    ```
+### 3. Lanzar Servidor y Monitor
+Arranca el servidor en segundo plano con monitoreo de inactividad automático.
+*   **Estándar:** `./3-run.sh`
+*   **Visión:** `./3-run.sh --vl`
 
 ---
 
-## ✨ Características Técnicas
+## ✨ Características Técnicas (Unified)
 
-- **🔄 Detección Automática:** Los scripts detectan el binario `/app/llama-server` de la imagen Docker para evitar compilaciones innecesarias.
-- **🚀 Ultra-Contexto:** Configurado por defecto para **256k tokens** con Flash Attention.
-- **⏱️ Watchdog Inteligente:** Apagado automático del servidor tras inactividad para ahorrar crédito en Clore.ai.
-- **⚡ Descarga Acelerada:** Uso de `aria2c` con 16 conexiones simultáneas.
+- **🔄 Perfiles Inteligentes:** Configuración centralizada en `config.sh`.
+- **🖥️ Soporte Multi-Plataforma:** Apple Silicon (Metal) y NVIDIA (CUDA) detectados automáticamente.
+- **⏱️ Monitor Universal:** `src/monitor.sh` protege tu RAM/Créditos en ambos perfiles.
+- **⚡ Descarga Acelerada:** Uso de `aria2c` con fallback a `curl`.
 
 ---
 
 ## ⚙️ Configuración (`config.sh`)
 
-Puedes personalizar los parámetros clave antes de ejecutar los scripts:
-
 | Variable | Propósito | Valor por Defecto |
 | :--- | :--- | :--- |
-| `CONTEXT_SIZE` | Ventana de contexto máxima | 262144 (256k) |
-| `API_KEY` | Clave de seguridad de la API | `master-api-key-enok1111` |
-| `IDLE_TIMEOUT` | Tiempo de auto-apagado (segundos) | 1800 (30 min) |
+| `MODEL_PROFILE` | Perfil activo | `QWEN_27B` o `QWEN_VL_3B` |
+| `API_KEY` | Clave de seguridad | `master-api-key-enok1111` |
+| `IDLE_TIMEOUT` | Auto-apagado (seg) | 1800 (30 min) |
+| `TEMPERATURE` | Creatividad (0-1.5) | 0.6 |
+| `TOP_P` | Nucleus Sampling | 0.95 |
+| `MIN_P` | Min Probability | 0.1 |
+| `TOP_K` | Top K tokens | 40 |
+| `REPEAT_PENALTY` | Penalización Rep. | 1.0 |
+
+### 🆕 Nuevos Parámetros de Ejecución (`3-run.sh`)
+
+Ahora puedes pasar parámetros directamente al ejecutar:
+```bash
+./3-run.sh --vl --temp 0.8 --top-p 0.9
+```
+
+## 📊 Mantenimiento y Logs
+
+- **Ver Inferencia:** `tail -f server.log`
+- **Ver Monitor:** `tail -f monitor.log`
+- **Detener Todo:** `pkill -f llama-server && pkill -f monitor.sh`
 
 ---
 

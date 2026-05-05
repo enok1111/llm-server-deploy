@@ -41,10 +41,16 @@ nohup "$SERVER_BIN" \
   --port "$PORT" \
   --host 0.0.0.0 \
   --api-key "$API_KEY" \
+  --temp "$TEMPERATURE" \
+  --top-p "$TOP_P" \
+  --min-p "$MIN_P" \
+  --top-k "$TOP_K" \
+  --repeat-penalty "$REPEAT_PENALTY" \
   --no-webui \
-  --swa-full  \
-  --ctx-checkpoints "$CTX_CHECKPOINTS" \
   --jinja \
+  --swa-full \
+  --ctx-checkpoints "$CTX_CHECKPOINTS" \
   > "$LOG_FILE" 2>&1 &
   
-echo $! > "$BASE_DIR/server.pid"
+echo $! > "$PID_FILE"
+echo "✅ PID guardado en $PID_FILE"
