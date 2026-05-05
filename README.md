@@ -1,26 +1,27 @@
-# 🚀 LLM Server Deploy Pro
+# 🚀 LLM Server Deploy Pro (Heretic Uncensored Branch)
 
-Despliegue optimizado de modelos **Qwen 27B** con **llama.cpp**. Este repositorio detecta automáticamente si estás en una instancia limpia (Bare Metal) o en una instancia de **Clore.ai** con la imagen oficial de `llama.cpp`.
+Despliegue optimizado del modelo **Qwen3.6 27B Heretic Uncensored** con **llama.cpp**. Este repositorio detecta automáticamente si estás en una instancia limpia (Bare Metal) o en una instancia de **Clore.ai** con la imagen oficial de `llama.cpp`.
 
 ## 🚀 Uso Unificado (Unified Workflow)
 
-Este repositorio ahora soporta múltiples perfiles de modelo siguiendo las mejores prácticas **DRY**.
+Este perfil está configurado para:
+*   **Modelo:** Qwen3.6-27B-Heretic-Uncensored (DavidAU)
+*   **Quant:** Q4_K_M (Di-IMatrix)
+*   **Hardware:** 1x RTX 3090/4090 (24GB VRAM)
 
 ### 1. Preparar Entorno (Solo una vez)
-Detecta automáticamente tu OS (Linux/CUDA o Mac/Metal) y compila/instala lo necesario.
 ```bash
 ./1-install.sh
 ```
 
 ### 2. Descargar Modelos
-Puedes descargar el modelo estándar o el perfil VL (Visión).
-*   **Estándar (Qwen 27B):** `./2-download.sh`
-*   **Visión (Qwen2.5-VL 3B):** `./2-download.sh --vl`
+*   **Estándar:** `./2-download.sh`
+*   **Visión:** `./2-download.sh --vision` (Descarga el proyector mmproj)
 
 ### 3. Lanzar Servidor y Monitor
 Arranca el servidor en segundo plano con monitoreo de inactividad automático.
 *   **Estándar:** `./3-run.sh`
-*   **Visión:** `./3-run.sh --vl`
+*   **Visión:** `./3-run.sh --vision`
 
 ---
 

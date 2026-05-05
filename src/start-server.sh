@@ -1,6 +1,6 @@
 #!/bin/bash
 # =============================================
-# Script optimizado para Qwen 2.7B / 27B
+# Script optimizado para Qwen 3.6 27B
 # =============================================
 
 source "$(dirname "$0")/../config.sh"
