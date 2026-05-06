@@ -15,7 +15,7 @@ MODEL_FILENAME="Qwen3.6-27B-Heretic.gguf"
 VISION_MODEL_URL="https://huggingface.co/DavidAU/Qwen3.6-27B-Heretic-Uncensored-FINETUNE-NEO-CODE-Di-IMatrix-MAX-GGUF/resolve/main/mmproj-BF16.gguf?download=true"
 VISION_MODEL_FILENAME="mmproj-BF16.gguf"
 
-CTX_CHECKPOINTS=128
+CTX_CHECKPOINTS=96
 CXT_SIZE=229376
 BATCH_SIZE=2048
 PORT=8080
