@@ -1,6 +1,6 @@
 #!/bin/bash
 # =============================================================
-# Watchdog V3.1: Simple & Robust Health Check (Fixed Startup)
+# Watchdog V3.2: Robust Health Check (Curl & Proxy Fixes)
 # =============================================================
 
 # Get the directory where the script is located
@@ -16,6 +16,12 @@ log() {
     echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1" >> "$WATCHDOG_LOG"
 }
 
+# Auto-instalar curl si el contenedor no lo tiene (típico en Clore.ai)
+if ! command -v curl >/dev/null 2>&1; then
+    log "⚙️ 'curl' no encontrado en el sistema. Instalando..."
+    apt-get update -qq && apt-get install -y curl -qq >/dev/null 2>&1
+fi
+
 start_server() {
     log "🚀 Starting llama-server via start-server.sh..."
     bash "$BASE_DIR/src/start-server.sh"
@@ -28,10 +34,10 @@ stop_server() {
     sleep 5
 }
 
-log "🐕 Watchdog V3.1 started monitoring port $PORT"
+log "🐕 Watchdog V3.2 started monitoring port $PORT"
 
 while true; do
-    # 1. Check if the process is alive
+    # 1. Comprobar si el proceso base sigue vivo
     if ! pgrep -f "llama-server -m" > /dev/null; then
         log "⚠️ Process not found. Triggering start..."
         FAIL_COUNT=0
@@ -41,35 +47,35 @@ while true; do
     fi
 
     # 2. Check HTTP Health
-    # We use -w "%{http_code}" to get the status. 000 means connection refused (port not open).
-    HTTP_STATUS=$(curl -s -m 15 -o /dev/null -w "%{http_code}" "http://127.0.0.1:$PORT/health" || echo "000")
+    # Usamos --noproxy "*" para evitar que Clore.ai interfiera con localhost
+    HTTP_STATUS=$(curl --noproxy "*" -s -m 15 -o /dev/null -w "%{http_code}" "http://127.0.0.1:$PORT/health" || echo "000")
 
     case "$HTTP_STATUS" in
-        200)
-            # Ready and serving
+        200|401|403)
+            # Listo y sirviendo (Incluimos 401 por si alguna actu de llama.cpp pide API key en /health)
             if [ "$FAIL_COUNT" -gt 0 ]; then
-                log "✅ Server is back online (HTTP 200)."
+                log "✅ Server is back online (HTTP $HTTP_STATUS)."
             fi
             FAIL_COUNT=0
             ;;
         503)
-            # Still loading model - This is normal for large models
+            # Modelo cargando en la VRAM
             log "⏳ Server is loading model (HTTP 503)..."
             FAIL_COUNT=0
             ;;
         000)
-            # Port not open yet - Server is still initializing binary
-            log "🔌 Port $PORT not open yet. Waiting for llama-server to initialize..."
+            # Puerto cerrado o curl falló
+            log "🔌 Port $PORT not reachable yet. Waiting for llama-server..."
             FAIL_COUNT=0 
             ;;
         *)
-            # Real errors (500, 404, etc.)
+            # Errores reales que requieren reinicio
             FAIL_COUNT=$((FAIL_COUNT + 1))
             log "⚠️ Health check failed (HTTP $HTTP_STATUS). Attempt $FAIL_COUNT/$MAX_FAILS"
             ;;
     esac
 
-    # 3. Handle persistent failure
+    # 3. Reiniciar si falla de manera persistente
     if [ "$FAIL_COUNT" -ge "$MAX_FAILS" ]; then
         log "🚨 Server unresponsive for $MAX_FAILS checks. Restarting..."
         stop_server
