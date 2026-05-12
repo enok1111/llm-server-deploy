@@ -1,82 +1,54 @@
 #!/bin/bash
 # =============================================================
-# Watchdog V3.4: Non-Blocking & PID-Based
+# Watchdog V4: Keep It Simple & Robust
 # =============================================================
 
+# Get the directory where the script is located
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/../config.sh"
 
 WATCHDOG_LOG="$BASE_DIR/watchdog.log"
-CHECK_INTERVAL=30
-MAX_FAILS=3
-FAIL_COUNT=0
+CHECK_INTERVAL=30 # Segundos entre cada chequeo
+STARTUP_WAIT=90   # Segundos de gracia para que el modelo cargue tras un reinicio
 
 log() {
-    echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1" >> "$WATCHDOG_LOG"
+    # Usamos tee para que el log se vea en la consola si se ejecuta manualmente
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1" | tee -a "$WATCHDOG_LOG"
 }
 
-# Instalación silenciosa de herramientas si faltan
-if ! command -v curl >/dev/null 2>&1 || ! command -v pgrep >/dev/null 2>&1; then
-    log "⚙️ Instalando herramientas de sistema..."
-    apt-get update -qq && apt-get install -y curl procps -qq >/dev/null 2>&1
+# Asegurar que curl esté instalado (clave para el funcionamiento)
+if ! command -v curl > /dev/null; then
+    log "⚙️ 'curl' no encontrado. Instalando..."
+    apt-get update -qq && apt-get install -y curl -qq
 fi
 
-start_server() {
-    log "🚀 Launching start-server.sh (Async)..."
-    # Lanzamos en background y redirigimos para que el watchdog no espere
-    bash "$BASE_DIR/src/start-server.sh" > /dev/null 2>&1 &
-    sleep 10
-}
+log "🐕 Watchdog V4.0 iniciado. Monitorizando http://127.0.0.1:$PORT/health"
 
-stop_server() {
-    log "🛑 Cleaning up old processes..."
-    pkill -9 -f "llama-server -m" || true
-    rm -f "$PID_FILE"
-    sleep 2
-}
-
-log "🐕 Watchdog V3.4 started on port $PORT"
-
+# Bucle de monitorización infinito
 while true; do
-    # 1. Verificar si el proceso existe (usando pgrep para mayor seguridad en Docker)
-    if ! pgrep -f "llama-server -m" > /dev/null; then
-        log "⚠️ Server process not found. Starting..."
-        FAIL_COUNT=0
-        start_server
-        continue
+    # Usamos -sf para que curl falle silenciosamente (no muestre output) y devuelva
+    # un código de error si el HTTP status no es 2xx (OK).
+    # --noproxy '*' es vital en Clore.ai para ignorar proxies.
+    if curl -sf --noproxy "*" "http://127.0.0.1:$PORT/health" > /dev/null; then
+        # El servidor está sano. No hacemos nada.
+        :
+    else
+        # Si curl falla, es que el servidor no responde correctamente.
+        log "⚠️ Health check fallido. El servidor está caído o no responde."
+
+        log "🛑 Matando cualquier proceso residual del servidor..."
+        pkill -9 -f "llama-server -m" || true
+        sleep 5 # Pausa para que el sistema operativo libere el puerto de red.
+
+        log "🚀 Lanzando el servidor de nuevo..."
+        # Lanzamos el script de arranque en un subshell en segundo plano para asegurar
+        # que el watchdog NUNCA se quede colgado esperando.
+        (bash "$BASE_DIR/src/start-server.sh") &
+
+        log "⏳ Esperando ${STARTUP_WAIT}s a que el modelo cargue antes del próximo chequeo..."
+        sleep "$STARTUP_WAIT"
     fi
 
-    # 2. Check HTTP Health
-    # Usamos localhost y omitimos proxy para evitar problemas de red interna
-    HTTP_STATUS=$(curl -s --noproxy "*" -m 10 -o /dev/null -w "%{http_code}" "http://127.0.0.1:$PORT/health" || echo "000")
-
-    case "$HTTP_STATUS" in
-        200|401|403)
-            if [ "$FAIL_COUNT" -gt 0 ]; then log "✅ Server recovered (HTTP $HTTP_STATUS)."; fi
-            FAIL_COUNT=0
-            ;;
-        503)
-            log "⏳ Model loading (503)..."
-            FAIL_COUNT=0
-            ;;
-        000)
-            # El puerto aún no responde, pero el proceso existe. Esperamos.
-            log "🔌 Server process exists but port $PORT is not yet open."
-            FAIL_COUNT=0
-            ;;
-        *)
-            FAIL_COUNT=$((FAIL_COUNT + 1))
-            log "⚠️ Health check failed ($HTTP_STATUS). Attempt $FAIL_COUNT/$MAX_FAILS"
-            ;;
-    esac
-
-    # 3. Reinicio por fallos acumulados
-    if [ "$FAIL_COUNT" -ge "$MAX_FAILS" ]; then
-        log "🚨 Server unresponsive. Performing hard restart..."
-        stop_server
-        start_server
-        FAIL_COUNT=0
-    fi
-
+    # Esperamos al siguiente chequeo
     sleep "$CHECK_INTERVAL"
 done
