@@ -1,9 +1,8 @@
 #!/bin/bash
 # =============================================================
-# Watchdog V3.2: Robust Health Check (Curl & Proxy Fixes)
+# Watchdog V3.4: Non-Blocking & PID-Based
 # =============================================================
 
-# Get the directory where the script is located
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/../config.sh"
 
@@ -16,72 +15,67 @@ log() {
     echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1" >> "$WATCHDOG_LOG"
 }
 
-# Auto-instalar curl si el contenedor no lo tiene (típico en Clore.ai)
-if ! command -v curl >/dev/null 2>&1; then
-    log "⚙️ 'curl' no encontrado en el sistema. Instalando..."
-    apt-get update -qq && apt-get install -y curl -qq >/dev/null 2>&1
+# Instalación silenciosa de herramientas si faltan
+if ! command -v curl >/dev/null 2>&1 || ! command -v pgrep >/dev/null 2>&1; then
+    log "⚙️ Instalando herramientas de sistema..."
+    apt-get update -qq && apt-get install -y curl procps -qq >/dev/null 2>&1
 fi
 
 start_server() {
-    log "🚀 Starting llama-server via start-server.sh..."
-    bash "$BASE_DIR/src/start-server.sh"
-    sleep 5
+    log "🚀 Launching start-server.sh (Async)..."
+    # Lanzamos en background y redirigimos para que el watchdog no espere
+    bash "$BASE_DIR/src/start-server.sh" > /dev/null 2>&1 &
+    sleep 10
 }
 
 stop_server() {
-    log "🛑 Hard killing llama-server..."
+    log "🛑 Cleaning up old processes..."
     pkill -9 -f "llama-server -m" || true
-    sleep 5
+    rm -f "$PID_FILE"
+    sleep 2
 }
 
-log "🐕 Watchdog V3.2 started monitoring port $PORT"
+log "🐕 Watchdog V3.4 started on port $PORT"
 
 while true; do
-    # 1. Comprobar si el proceso base sigue vivo
+    # 1. Verificar si el proceso existe (usando pgrep para mayor seguridad en Docker)
     if ! pgrep -f "llama-server -m" > /dev/null; then
-        log "⚠️ Process not found. Triggering start..."
+        log "⚠️ Server process not found. Starting..."
         FAIL_COUNT=0
         start_server
-        sleep 10
         continue
     fi
 
     # 2. Check HTTP Health
-    # Usamos --noproxy "*" para evitar que Clore.ai interfiera con localhost
-    HTTP_STATUS=$(curl --noproxy "*" -s -m 15 -o /dev/null -w "%{http_code}" "http://127.0.0.1:$PORT/health" || echo "000")
+    # Usamos localhost y omitimos proxy para evitar problemas de red interna
+    HTTP_STATUS=$(curl -s --noproxy "*" -m 10 -o /dev/null -w "%{http_code}" "http://127.0.0.1:$PORT/health" || echo "000")
 
     case "$HTTP_STATUS" in
         200|401|403)
-            # Listo y sirviendo (Incluimos 401 por si alguna actu de llama.cpp pide API key en /health)
-            if [ "$FAIL_COUNT" -gt 0 ]; then
-                log "✅ Server is back online (HTTP $HTTP_STATUS)."
-            fi
+            if [ "$FAIL_COUNT" -gt 0 ]; then log "✅ Server recovered (HTTP $HTTP_STATUS)."; fi
             FAIL_COUNT=0
             ;;
         503)
-            # Modelo cargando en la VRAM
-            log "⏳ Server is loading model (HTTP 503)..."
+            log "⏳ Model loading (503)..."
             FAIL_COUNT=0
             ;;
         000)
-            # Puerto cerrado o curl falló
-            log "🔌 Port $PORT not reachable yet. Waiting for llama-server..."
-            FAIL_COUNT=0 
+            # El puerto aún no responde, pero el proceso existe. Esperamos.
+            log "🔌 Server process exists but port $PORT is not yet open."
+            FAIL_COUNT=0
             ;;
         *)
-            # Errores reales que requieren reinicio
             FAIL_COUNT=$((FAIL_COUNT + 1))
-            log "⚠️ Health check failed (HTTP $HTTP_STATUS). Attempt $FAIL_COUNT/$MAX_FAILS"
+            log "⚠️ Health check failed ($HTTP_STATUS). Attempt $FAIL_COUNT/$MAX_FAILS"
             ;;
     esac
 
-    # 3. Reiniciar si falla de manera persistente
+    # 3. Reinicio por fallos acumulados
     if [ "$FAIL_COUNT" -ge "$MAX_FAILS" ]; then
-        log "🚨 Server unresponsive for $MAX_FAILS checks. Restarting..."
+        log "🚨 Server unresponsive. Performing hard restart..."
         stop_server
         start_server
         FAIL_COUNT=0
-        sleep 30
     fi
 
     sleep "$CHECK_INTERVAL"
