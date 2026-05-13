@@ -15,13 +15,8 @@ MODEL_FILENAME="Qwen3.6-27B.gguf"
 VISION_MODEL_URL="https://huggingface.co/unsloth/Qwen3.6-27B-MTP-GGUF/resolve/main/mmproj-F16.gguf?download=true"
 VISION_MODEL_FILENAME="mmproj-F16.gguf"
 
-<<<<<<< HEAD
 CTX_CHECKPOINTS=48
 CXT_SIZE=262144
-=======
-CTX_CHECKPOINTS=72
-CXT_SIZE=196608
->>>>>>> 39d727a (temp fix)
 BATCH_SIZE=1024
 PORT=8080
 API_KEY="master-api-key-enok1111"
