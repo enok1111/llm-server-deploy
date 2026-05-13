@@ -1,44 +1,29 @@
 #!/bin/bash
-# ==========================================
-# Script de Ejecución Unificado
-# ==========================================
-
-# Selección de perfil y parámetros
-while [[ $# -gt 0 ]]; do
-    case $1 in
-        --vl) export MODEL_PROFILE="QWEN_VL_3B"; shift ;;
-        --vision) export USE_VISION=true; shift ;;
-        --temp) export TEMPERATURE="$2"; shift 2 ;;
-        --top-p) export TOP_P="$2"; shift 2 ;;
-        --min-p) export MIN_P="$2"; shift 2 ;;
-        --top-k) export TOP_K="$2"; shift 2 ;;
-        --repeat-penalty) export REPEAT_PENALTY="$2"; shift 2 ;;
-        *) shift ;;
-    esac
-done
+# =============================================================
+# Unified Startup Script (Watchdog-Centric)
+# =============================================================
 
 source "$(dirname "$0")/config.sh"
 
-echo "🧹 Limpiando procesos antiguos..."
-pkill -f llama-server || true
-pkill -f monitor.sh || true
+echo "🧹 Cleaning up old processes..."
+pkill -9 -f "llama-server -m" || true
+pkill -9 -f "watchdog.sh" || true
 sleep 2
 
-echo "🚀 Arrancando Servidor LLM ($MODEL_PROFILE)..."
+echo "🚀 Launching Watchdog V3..."
+echo "The watchdog will automatically start and monitor the llama-server."
+
+# Ensure scripts are executable
 chmod +x "$BASE_DIR/src/start-server.sh"
-chmod +x "$BASE_DIR/src/monitor.sh"
+chmod +x "$BASE_DIR/src/watchdog.sh"
 
-# Iniciar servidor
-bash "$BASE_DIR/src/start-server.sh"
+# Start the watchdog in the background
+nohup bash "$BASE_DIR/src/watchdog.sh" > /dev/null 2>&1 &
 
-# Iniciar monitor
-nohup bash "$BASE_DIR/src/monitor.sh" > "$BASE_DIR/monitor.log" 2>&1 &
-
-echo "========================================="
-echo "✨ Servidor en línea (Puerto: $PORT)"
-echo "📊 Perfil: $MODEL_PROFILE | Visión: $USE_VISION"
-echo "🌡️ Temp: $TEMPERATURE | Top-P: $TOP_P | Min-P: $MIN_P"
-echo "🔢 Top-K: $TOP_K | Penalty: $REPEAT_PENALTY"
-echo "📝 Logs: tail -f $LOG_FILE"
-echo "🛑 Detener: pkill -f llama-server && pkill -f monitor.sh"
-echo "========================================="
+echo "============================================================="
+echo "✨ Watchdog is now running in the background."
+echo "📊 Monitoring: http://127.0.0.1:$PORT/health"
+echo "📝 Watchdog Log: tail -f watchdog.log"
+echo "📝 Server Log:   tail -f server.log"
+echo "🛑 To stop everything: pkill -9 -f 'llama-server|watchdog.sh'"
+echo "============================================================="
