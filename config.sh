@@ -15,14 +15,14 @@ MODEL_FILENAME="Qwen3.6-27B-Heretic.gguf"
 VISION_MODEL_URL="https://huggingface.co/DavidAU/Qwen3.6-27B-Heretic-Uncensored-FINETUNE-NEO-CODE-Di-IMatrix-MAX-GGUF/resolve/main/mmproj-BF16.gguf?download=true"
 VISION_MODEL_FILENAME="mmproj-BF16.gguf"
 
-CTX_CHECKPOINTS=48
+CTX_CHECKPOINTS=16
 CXT_SIZE=196608
 BATCH_SIZE=1024
 PORT=8080
 API_KEY="master-api-key-enok1111"
 IDLE_TIMEOUT=1800
 # --- Parámetros de Inferencia ---
-TEMPERATURE=0.5
+TEMPERATURE=0.6
 TOP_K=40
 TOP_P=0.95
 MIN_P=0.05

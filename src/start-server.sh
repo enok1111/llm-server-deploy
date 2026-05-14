@@ -17,7 +17,7 @@ nohup "$SERVER_BIN" \
   -m "$MODELS_DIR/$MODEL_FILENAME" \
   $VISION_ARGS \
   -c "$CXT_SIZE" \
-  -ngl 60 \
+  -ngl 62 \
   -np 1 \
   --flash-attn on \
   --cache-type-k q8_0 \
@@ -28,13 +28,12 @@ nohup "$SERVER_BIN" \
   --host 0.0.0.0 \
   --api-key "$API_KEY" \
   --temp "$TEMPERATURE" \
-  --top-p "$TOP_P" \
-  --min-p "$MIN_P" \
-  --repeat-penalty "$REPEAT_PENALTY" \
-  --presence-penalty 0.4 \
   --no-webui \
   --jinja \
   --ctx-checkpoints "$CTX_CHECKPOINTS" \
+  --rope-scaling yarn \
+  --rope-freq-base 1000000 \
+  --yarn-orig-ctx 32768 \
   > "$LOG_FILE" 2>&1 &
   
 echo $! > "$PID_FILE"
