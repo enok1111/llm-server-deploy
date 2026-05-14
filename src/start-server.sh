@@ -3,9 +3,9 @@ source "$(dirname "$0")/../config.sh"
 
 export PATH=/usr/local/cuda/bin:$PATH
 export LD_LIBRARY_PATH=/usr/local/cuda/lib64:$LD_LIBRARY_PATH
-# export GGML_CUDA_GRAPH_OPT=1
+export GGML_CUDA_GRAPH_OPT=0
 # export LLAMA_ATTN_ROT_DISABLE=1 
-export GGML_CUDA_ENABLE_UNIFIED_MEMORY=1
+# export GGML_CUDA_ENABLE_UNIFIED_MEMORY=1
 
 echo "🚀 Iniciando servidor: $SERVER_BIN"
 
