@@ -17,11 +17,11 @@ nohup "$SERVER_BIN" \
   -m "$MODELS_DIR/$MODEL_FILENAME" \
   $VISION_ARGS \
   -c "$CXT_SIZE" \
-  -ngl 62 \
+  -ngl 99 \
   -np 1 \
   --flash-attn on \
-  --cache-type-k q8_0 \
-  --cache-type-v q8_0 \
+  --cache-type-k q4_0 \
+  --cache-type-v q4_0 \
   -b "$BATCH_SIZE" \
   -ub "$BATCH_SIZE" \
   --port "$PORT" \
@@ -31,9 +31,6 @@ nohup "$SERVER_BIN" \
   --no-webui \
   --jinja \
   --ctx-checkpoints "$CTX_CHECKPOINTS" \
-  --rope-scaling yarn \
-  --rope-freq-base 1000000 \
-  --yarn-orig-ctx 32768 \
   > "$LOG_FILE" 2>&1 &
   
 echo $! > "$PID_FILE"
