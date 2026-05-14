@@ -13,7 +13,6 @@ echo "🚀 Launching llama-server..."
 
 # Ensure scripts are executable
 chmod +x "$BASE_DIR/src/start-server.sh"
-chmod +x "$BASE_DIR/src/watchdog.sh"
 
 # Start the server
 bash "$BASE_DIR/src/start-server.sh"
