@@ -9,11 +9,11 @@ LLAMA_DIR="$BASE_DIR/llama.cpp"
 LOG_FILE="$BASE_DIR/server.log"
 PID_FILE="$BASE_DIR/server.pid"
 
-MODEL_URL="https://huggingface.co/DavidAU/Qwen3.6-27B-Heretic-Uncensored-FINETUNE-NEO-CODE-Di-IMatrix-MAX-GGUF/resolve/main/Qwen3.6-27B-NEO-CODE-HERE-2T-OT-Q4_K_M.gguf?download=true"
-MODEL_FILENAME="Qwen3.6-27B-Heretic.gguf"
+MODEL_URL="https://huggingface.co/unsloth/Qwen3.6-27B-MTP-GGUF/resolve/main/Qwen3.6-27B-Q4_K_M.gguf?download=true"
+MODEL_FILENAME="Qwen3.6-27B.gguf"
 
-VISION_MODEL_URL="https://huggingface.co/DavidAU/Qwen3.6-27B-Heretic-Uncensored-FINETUNE-NEO-CODE-Di-IMatrix-MAX-GGUF/resolve/main/mmproj-BF16.gguf?download=true"
-VISION_MODEL_FILENAME="mmproj-BF16.gguf"
+VISION_MODEL_URL="https://huggingface.co/unsloth/Qwen3.6-27B-MTP-GGUF/resolve/main/mmproj-F16.gguf?download=true"
+VISION_MODEL_FILENAME="mmproj-F16.gguf"
 
 CTX_CHECKPOINTS=48
 CXT_SIZE=262144
