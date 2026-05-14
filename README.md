@@ -18,8 +18,8 @@ Este perfil está configurado para:
 *   **Estándar:** `./2-download.sh`
 *   **Visión:** `./2-download.sh --vision` (Descarga el proyector mmproj)
 
-### 3. Lanzar Servidor y Monitor
-Arranca el servidor en segundo plano con monitoreo de inactividad automático.
+### 3. Lanzar Servidor
+Arranca el servidor en segundo plano.
 *   **Estándar:** `./3-run.sh`
 *   **Visión:** `./3-run.sh --vision`
 
@@ -29,7 +29,6 @@ Arranca el servidor en segundo plano con monitoreo de inactividad automático.
 
 - **🔄 Perfiles Inteligentes:** Configuración centralizada en `config.sh`.
 - **🖥️ Soporte Multi-Plataforma:** Apple Silicon (Metal) y NVIDIA (CUDA) detectados automáticamente.
-- **⏱️ Monitor Universal:** `src/monitor.sh` protege tu RAM/Créditos en ambos perfiles.
 - **⚡ Descarga Acelerada:** Uso de `aria2c` con fallback a `curl`.
 
 ---
@@ -40,7 +39,6 @@ Arranca el servidor en segundo plano con monitoreo de inactividad automático.
 | :--- | :--- | :--- |
 | `MODEL_PROFILE` | Perfil activo | `QWEN_27B` o `QWEN_VL_3B` |
 | `API_KEY` | Clave de seguridad | `master-api-key-enok1111` |
-| `IDLE_TIMEOUT` | Auto-apagado (seg) | 1800 (30 min) |
 | `TEMPERATURE` | Creatividad (0-1.5) | 0.6 |
 | `TOP_P` | Nucleus Sampling | 0.95 |
 | `MIN_P` | Min Probability | 0.1 |
@@ -49,7 +47,7 @@ Arranca el servidor en segundo plano con monitoreo de inactividad automático.
 
 ### 🆕 Nuevos Parámetros de Ejecución (`3-run.sh`)
 
-Ahora puedes pasar parámetros directamente al ejecutar:
+Now puedes pasar parámetros directamente al ejecutar:
 ```bash
 ./3-run.sh --vl --temp 0.8 --top-p 0.9
 ```
@@ -57,21 +55,4 @@ Ahora puedes pasar parámetros directamente al ejecutar:
 ## 📊 Mantenimiento y Logs
 
 - **Ver Inferencia:** `tail -f server.log`
-- **Ver Monitor:** `tail -f monitor.log`
-- **Detener Todo:** `pkill -f llama-server && pkill -f monitor.sh`
-
----
-
-## 💡 Recomendaciones de Hardware (Clore.ai)
-
-- **GPU:** Mínimo **1x RTX 3090/4090** (24GB VRAM) para el modelo Q4_K_M.
-- **Recomendado:** **2x RTX 3090/4090** para manejar contextos largos sin degradación de velocidad.
-- **Drivers:** La imagen CUDA 13 requiere hosts con drivers **570.xx+**.
-
----
-
-## 📊 Mantenimiento y Logs
-
-- **Ver Inferencia:** `tail -f server.log`
-- **Ver Monitor:** `tail -f monitor.log`
-- **Detener Servidor:** `pkill -f llama-server && pkill -f monitor.sh`
+- **Detener Todo:** `pkill -f llama-server`
