@@ -17,7 +17,7 @@ nohup "$SERVER_BIN" \
   -m "$MODELS_DIR/$MODEL_FILENAME" \
   $VISION_ARGS \
   -c "$CXT_SIZE" \
-  -ngl 60 \
+  -ngl 62 \
   -np 1 \
   --flash-attn on \
   --cache-type-k q4_0 \
