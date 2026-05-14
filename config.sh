@@ -24,7 +24,7 @@ IDLE_TIMEOUT=1800
 
 # --- Perfiles de Sampling ---
 # Opciones: general, coding, coding_heavy, thinking_plus, instruct
-SAMPLING_PROFILE="coding"
+SAMPLING_PROFILE="coding_plus"
 
 # --- Thinking Mode ---
 # Qwen3.6 soporta habilitar/deshabilitar el pensamiento vía template kwargs
