@@ -31,6 +31,10 @@ nohup "$SERVER_BIN" \
   --no-webui \
   --jinja \
   --ctx-checkpoints "$CTX_CHECKPOINTS" \
+  --top-p "$TOP_P" \
+  --min-p "$MIN_P" \
+  --top-k "$TOP_K" \
+  --repeat-penalty "$REPEAT_PENALTY" \
   > "$LOG_FILE" 2>&1 &
   
 echo $! > "$PID_FILE"
