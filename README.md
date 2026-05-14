@@ -22,45 +22,46 @@ Este perfil está configurado para:
 Arranca el servidor en segundo plano.
 *   **Estándar:** `./3-run.sh`
 *   **Visión:** `./3-run.sh --vision`
+*   **Con Perfil:** `./3-run.sh --profile coding`
+*   **Sin Pensamiento:** `./3-run.sh --no-thinking`
 
 ---
 
 ## ✨ Características Técnicas (Unified)
 
-- **🔄 Perfiles Inteligentes:** Configuración centralizada en `config.sh`.
+- **🔄 Perfiles Inteligentes:** Configuración centralizada en `config.sh` y personalizable vía CLI.
 - **🖥️ Soporte Multi-Plataforma:** Apple Silicon (Metal) y NVIDIA (CUDA) detectados automáticamente.
 - **⚡ Descarga Acelerada:** Uso de `aria2c` con fallback a `curl`.
 
 ---
 
-## ⚙️ Configuración (`config.sh`)
+## ⚙️ Configuración (`config.sh` & CLI)
 
-La configuración principal se gestiona en `config.sh`. Hemos implementado **Perfiles de Sampling** para optimizar el modelo según el caso de uso.
+La configuración principal se gestiona en `config.sh`. Hemos implementado **Perfiles de Sampling** para optimizar el modelo según el caso de uso. Los parámetros pueden sobrescribirse mediante flags al ejecutar `./3-run.sh`.
 
-### 🎭 Perfiles de Sampling (`SAMPLING_PROFILE`)
+### 🎭 Perfiles de Sampling (`--profile`)
 
 | Perfil | Descripción | Parámetros Clave |
 | :--- | :--- | :--- |
-| `general` | (Default) Balanceado para tareas generales. | Temp 1.0, Thinking ON |
-| `coding` | Optimizado para programación exacta (README). | Temp 0.6, Rep. Penalty 1.0 |
-| `coding_plus` | Programación + Preferencia del Autor (Presencia). | Temp 0.6, Pres. Penalty 1.5 |
-| `thinking_plus` | Optimizado para razonamiento con presencia 1.5. | Temp 1.0, Pres. Penalty 1.5 |
-| `instruct` | Modo tradicional sin pensamiento (Fast). | Thinking OFF, Pres. 1.5 |
+| `general` | Balanceado para tareas generales. | Temp 1.0, Thinking ON |
+| `coding` | Optimizado para programación exacta. | Temp 0.6, Rep. Penalty 1.0 |
+| `coding_plus` | (Default) Programación + Estilo Autor. | Temp 0.6, Pres. Penalty 1.5 |
+| `thinking_plus` | Optimizado para razonamiento profundo. | Temp 1.0, Pres. Penalty 1.5 |
+| `instruct` | Modo tradicional sin pensamiento. | Thinking OFF, Pres. 1.5 |
 
-### 🧠 Control de Pensamiento (`ENABLE_THINKING`)
+### 🧠 Control de Pensamiento (`--thinking` / `--no-thinking`)
 
-| Variable | Propósito | Valor |
+| Flag | Propósito |
+| :--- | :--- |
+| `--thinking` | Fuerza la activación del razonamiento interno. |
+| `--no-thinking` | Desactiva el razonamiento (Modo fast/instruct). |
+
+### 🔧 Otros Flags de Ejecución
+
+| Flag | Propósito | Ejemplo |
 | :--- | :--- | :--- |
-| `ENABLE_THINKING` | Activa/Desactiva el razonamiento interno. | `true` / `false` |
-
-### 🔧 Otras Variables
-
-| Variable | Propósito | Valor por Defecto |
-| :--- | :--- | :--- |
-| `API_KEY` | Clave de seguridad | `master-api-key-enok1111` |
-| `CXT_SIZE` | Tamaño de contexto | 262144 |
-| `CTX_CHECKPOINTS`| Optimización de KV Cache | 32 |
-| `PORT` | Puerto del servidor | 8080 |
+| `--port` | Cambia el puerto del servidor. | `./3-run.sh --port 9000` |
+| `--vision` | Carga el modelo de visión (VL). | `./3-run.sh --vision` |
 
 ---
 

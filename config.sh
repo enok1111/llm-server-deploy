@@ -15,7 +15,7 @@ MODEL_FILENAME="Qwen3.6-27B-Uncensored.gguf"
 VISION_MODEL_URL="https://huggingface.co/HauhauCS/Qwen3.6-27B-Uncensored-HauhauCS-Balanced/resolve/main/mmproj-Qwen3.6-27B-Uncensored-HauhauCS-Balanced-f16.gguf?download=true"
 VISION_MODEL_FILENAME="mmproj-F16.gguf"
 
-CTX_CHECKPOINTS=72
+CTX_CHECKPOINTS=16
 CXT_SIZE=229376
 BATCH_SIZE=2048
 PORT=8080
@@ -24,11 +24,10 @@ IDLE_TIMEOUT=1800
 
 # --- Perfiles de Sampling ---
 # Opciones: general, coding, coding_heavy, thinking_plus, instruct
-SAMPLING_PROFILE="coding_plus"
+SAMPLING_PROFILE="${SAMPLING_PROFILE:-coding_plus}"
 
-# --- Thinking Mode ---
-# Qwen3.6 soporta habilitar/deshabilitar el pensamiento vía template kwargs
-ENABLE_THINKING=true
+# --- Thinking Mode Default (will be adjusted by profile) ---
+DEFAULT_THINKING=true
 
 # --- Configuración de Parámetros por Perfil ---
 case "$SAMPLING_PROFILE" in
@@ -76,9 +75,12 @@ case "$SAMPLING_PROFILE" in
         MIN_P=0.0
         REPEAT_PENALTY=1.0
         PRESENCE_PENALTY=1.5
-        ENABLE_THINKING=false
+        DEFAULT_THINKING=false
         ;;
 esac
+
+# Final decision on thinking mode: CLI/Env > Profile Default
+ENABLE_THINKING="${ENABLE_THINKING:-$DEFAULT_THINKING}"
 
 # Detección automática del binario de llama-server
 if [ -f "/app/llama-server" ]; then
