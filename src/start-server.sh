@@ -17,7 +17,7 @@ nohup "$SERVER_BIN" \
   -m "$MODELS_DIR/$MODEL_FILENAME" \
   $VISION_ARGS \
   -c "$CXT_SIZE" \
-  -ngl 62 \
+  -ngl 60 \
   -np 1 \
   --flash-attn on \
   --cache-type-k q8_0 \
@@ -30,8 +30,8 @@ nohup "$SERVER_BIN" \
   --temp "$TEMPERATURE" \
   --top-p "$TOP_P" \
   --min-p "$MIN_P" \
-  --top-k "$TOP_K" \
   --repeat-penalty "$REPEAT_PENALTY" \
+  --presence-penalty 0.4 \
   --no-webui \
   --jinja \
   --ctx-checkpoints "$CTX_CHECKPOINTS" \

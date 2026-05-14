@@ -1,28 +1,19 @@
 #!/bin/bash
 source "$(dirname "$0")/config.sh"
 
-echo "🔍 Detectando entorno de ejecución..."
+echo "📥 Forzando descarga y compilación fresca de llama.cpp..."
+apt-get update
+apt-get install -y build-essential cmake git libcurl4-openssl-dev libssl-dev aria2 nvidia-cuda-toolkit procps curl jq
 
-if [ -f "/app/llama-server" ]; then
-    echo "🐳 Entorno Docker (Clore.ai) detectado. Omitiendo compilación."
-    echo "📦 Instalando solo herramientas de soporte (aria2, procps, curl, jq)..."
-    apt-get update && apt-get install -y aria2 procps curl jq
-else
-    echo "🖥️ Entorno Bare Metal detectado. Iniciando instalación completa..."
-    apt-get update
-    apt-get install -y build-essential cmake git libcurl4-openssl-dev libssl-dev aria2 nvidia-cuda-toolkit procps curl jq
+export PATH=/usr/local/cuda/bin:$PATH
+export LD_LIBRARY_PATH=/usr/local/cuda/lib64:$LD_LIBRARY_PATH
 
-    export PATH=/usr/local/cuda/bin:$PATH
-    export LD_LIBRARY_PATH=/usr/local/cuda/lib64:$LD_LIBRARY_PATH
+if [ -d "$LLAMA_DIR" ]; then rm -rf "$LLAMA_DIR"; fi
+git clone https://github.com/ggerganov/llama.cpp "$LLAMA_DIR"
+cd "$LLAMA_DIR" && mkdir build && cd build
 
-    echo "📥 Descargando y preparando llama.cpp..."
-    if [ -d "$LLAMA_DIR" ]; then rm -rf "$LLAMA_DIR"; fi
-    git clone https://github.com/ggerganov/llama.cpp "$LLAMA_DIR"
-    cd "$LLAMA_DIR" && mkdir build && cd build
-    
-    echo "🏗️ Compilando para NVIDIA CUDA..."
-    cmake .. -DGGML_CUDA=ON
-    cmake --build . --config Release -j $(nproc)
-fi
+echo "🏗️ Compilando para NVIDIA CUDA (versión más reciente)..."
+cmake .. -DGGML_CUDA=ON
+cmake --build . --config Release -j $(nproc)
 
-echo "✅ Preparación completada."
+echo "✅ Compilación de llama.cpp completada."

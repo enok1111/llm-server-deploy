@@ -22,11 +22,11 @@ PORT=8080
 API_KEY="master-api-key-enok1111"
 IDLE_TIMEOUT=1800
 # --- Parámetros de Inferencia ---
-TEMPERATURE=0.7
-TOP_P=0.95
-MIN_P=0.1
+TEMPERATURE=0.5
 TOP_K=40
-REPEAT_PENALTY=1.1
+TOP_P=0.95
+MIN_P=0.05
+REPEAT_PENALTY=1.0
 
 # Detección automática del binario de llama-server
 if [ -f "/app/llama-server" ]; then
