@@ -31,12 +31,13 @@ nohup "$SERVER_BIN" \
   --temp "$TEMPERATURE" \
   --no-webui \
   --jinja \
-  --chat-template-file "$BASE_DIR/src/$JINJA_TEMPLATE" \
+  --chat-template-kwargs '{"enable_thinking": '"$ENABLE_THINKING"'}' \
   --ctx-checkpoints "$CTX_CHECKPOINTS" \
   --top-p "$TOP_P" \
   --min-p "$MIN_P" \
   --top-k "$TOP_K" \
   --repeat-penalty "$REPEAT_PENALTY" \
+  --presence-penalty "$PRESENCE_PENALTY" \
   > "$LOG_FILE" 2>&1 &
   
 echo $! > "$PID_FILE"

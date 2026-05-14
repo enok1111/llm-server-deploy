@@ -35,22 +35,34 @@ Arranca el servidor en segundo plano.
 
 ## ⚙️ Configuración (`config.sh`)
 
+La configuración principal se gestiona en `config.sh`. Hemos implementado **Perfiles de Sampling** para optimizar el modelo según el caso de uso.
+
+### 🎭 Perfiles de Sampling (`SAMPLING_PROFILE`)
+
+| Perfil | Descripción | Parámetros Clave |
+| :--- | :--- | :--- |
+| `general` | (Default) Balanceado para tareas generales. | Temp 1.0, Thinking ON |
+| `coding` | Optimizado para programación exacta (README). | Temp 0.6, Rep. Penalty 1.0 |
+| `coding_plus` | Programación + Preferencia del Autor (Presencia). | Temp 0.6, Pres. Penalty 1.5 |
+| `thinking_plus` | Optimizado para razonamiento con presencia 1.5. | Temp 1.0, Pres. Penalty 1.5 |
+| `instruct` | Modo tradicional sin pensamiento (Fast). | Thinking OFF, Pres. 1.5 |
+
+### 🧠 Control de Pensamiento (`ENABLE_THINKING`)
+
+| Variable | Propósito | Valor |
+| :--- | :--- | :--- |
+| `ENABLE_THINKING` | Activa/Desactiva el razonamiento interno. | `true` / `false` |
+
+### 🔧 Otras Variables
+
 | Variable | Propósito | Valor por Defecto |
 | :--- | :--- | :--- |
-| `MODEL_PROFILE` | Perfil activo | `QWEN_27B` o `QWEN_VL_3B` |
 | `API_KEY` | Clave de seguridad | `master-api-key-enok1111` |
-| `TEMPERATURE` | Creatividad (0-1.5) | 0.6 |
-| `TOP_P` | Nucleus Sampling | 0.95 |
-| `MIN_P` | Min Probability | 0.1 |
-| `TOP_K` | Top K tokens | 40 |
-| `REPEAT_PENALTY` | Penalización Rep. | 1.0 |
+| `CXT_SIZE` | Tamaño de contexto | 262144 |
+| `CTX_CHECKPOINTS`| Optimización de KV Cache | 32 |
+| `PORT` | Puerto del servidor | 8080 |
 
-### 🆕 Nuevos Parámetros de Ejecución (`3-run.sh`)
-
-Now puedes pasar parámetros directamente al ejecutar:
-```bash
-./3-run.sh --vl --temp 0.8 --top-p 0.9
-```
+---
 
 ## 📊 Mantenimiento y Logs
 

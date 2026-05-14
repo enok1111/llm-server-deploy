@@ -15,19 +15,70 @@ MODEL_FILENAME="Qwen3.6-27B-Uncensored.gguf"
 VISION_MODEL_URL="https://huggingface.co/HauhauCS/Qwen3.6-27B-Uncensored-HauhauCS-Aggressive/resolve/main/mmproj-Qwen3.6-27B-Uncensored-HauhauCS-Aggressive-f16.gguf?download=true"
 VISION_MODEL_FILENAME="mmproj-F16.gguf"
 
-JINJA_TEMPLATE=qwen3_nonthinking.jinja
 CTX_CHECKPOINTS=32
 CXT_SIZE=262144
 BATCH_SIZE=1024
 PORT=8080
 API_KEY="master-api-key-enok1111"
 IDLE_TIMEOUT=1800
-# --- Parámetros de Inferencia ---
-TEMPERATURE=0.6
-TOP_K=40
-TOP_P=0.95
-MIN_P=0.05
-REPEAT_PENALTY=1.0
+
+# --- Perfiles de Sampling ---
+# Opciones: general, coding, coding_heavy, thinking_plus, instruct
+SAMPLING_PROFILE="coding"
+
+# --- Thinking Mode ---
+# Qwen3.6 soporta habilitar/deshabilitar el pensamiento vía template kwargs
+ENABLE_THINKING=true
+
+# --- Configuración de Parámetros por Perfil ---
+case "$SAMPLING_PROFILE" in
+    "general")
+        # Thinking mode (default) — general tasks
+        TEMPERATURE=1.0
+        TOP_K=20
+        TOP_P=0.95
+        MIN_P=0.0
+        REPEAT_PENALTY=1.0
+        PRESENCE_PENALTY=0.0
+        ;;
+    "coding")
+        # Thinking mode — precise coding / WebDev (README exact)
+        TEMPERATURE=0.6
+        TOP_K=20
+        TOP_P=0.95
+        MIN_P=0.0
+        REPEAT_PENALTY=1.0
+        PRESENCE_PENALTY=0.0
+        ;;
+    "coding_plus")
+        # Precise coding + README Author personal preference (Presence 1.5)
+        TEMPERATURE=0.6
+        TOP_K=20
+        TOP_P=0.95
+        MIN_P=0.0
+        REPEAT_PENALTY=1.0
+        PRESENCE_PENALTY=1.5
+        ;;
+    "thinking_plus")
+        # README Author preference: Presence 1.5 to rein in thinking
+        TEMPERATURE=1.0
+        TOP_K=20
+        TOP_P=0.95
+        MIN_P=0.0
+        REPEAT_PENALTY=1.0
+        PRESENCE_PENALTY=1.5
+        ;;
+    "instruct")
+        # Non-thinking (Instruct) mode
+        TEMPERATURE=0.7
+        TOP_K=20
+        TOP_P=0.80
+        MIN_P=0.0
+        REPEAT_PENALTY=1.0
+        PRESENCE_PENALTY=1.5
+        ENABLE_THINKING=false
+        ;;
+esac
 
 # Detección automática del binario de llama-server
 if [ -f "/app/llama-server" ]; then
