@@ -31,7 +31,7 @@ nohup "$SERVER_BIN" \
   --temp "$TEMPERATURE" \
   --no-webui \
   --jinja \
-  --chat-template-file "$BASE_DIR/src/chat-template.jinja" \
+  --chat-template-file "$BASE_DIR/src/$JINJA_TEMPLATE" \
   --ctx-checkpoints "$CTX_CHECKPOINTS" \
   --top-p "$TOP_P" \
   --min-p "$MIN_P" \

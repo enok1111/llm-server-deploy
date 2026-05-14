@@ -15,7 +15,8 @@ MODEL_FILENAME="Qwen3.6-27B-Uncensored.gguf"
 VISION_MODEL_URL="https://huggingface.co/HauhauCS/Qwen3.6-27B-Uncensored-HauhauCS-Aggressive/resolve/main/mmproj-Qwen3.6-27B-Uncensored-HauhauCS-Aggressive-f16.gguf?download=true"
 VISION_MODEL_FILENAME="mmproj-F16.gguf"
 
-CTX_CHECKPOINTS=72
+JINJA_TEMPLATE=qwen3_nonthinking.jinja
+CTX_CHECKPOINTS=32
 CXT_SIZE=262144
 BATCH_SIZE=1024
 PORT=8080
