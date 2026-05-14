@@ -13,7 +13,7 @@ git clone https://github.com/ggerganov/llama.cpp "$LLAMA_DIR"
 cd "$LLAMA_DIR" && mkdir build && cd build
 
 echo "🏗️ Compilando para NVIDIA CUDA (versión más reciente)..."
-cmake .. -DGGML_CUDA=ON
+cmake .. -DGGML_CUDA=ON -DCMAKE_CUDA_ARCHITECTURES="86"
 cmake --build . --config Release -j $(nproc)
 
 echo "✅ Compilación de llama.cpp completada."
