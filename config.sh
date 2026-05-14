@@ -16,7 +16,7 @@ VISION_MODEL_URL="https://huggingface.co/DavidAU/Qwen3.6-27B-Heretic-Uncensored-
 VISION_MODEL_FILENAME="mmproj-BF16.gguf"
 
 CTX_CHECKPOINTS=48
-CXT_SIZE=229376
+CXT_SIZE=262144
 BATCH_SIZE=1024
 PORT=8080
 API_KEY="master-api-key-enok1111"
