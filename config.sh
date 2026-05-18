@@ -9,15 +9,15 @@ LLAMA_DIR="$BASE_DIR/llama.cpp"
 LOG_FILE="$BASE_DIR/server.log"
 PID_FILE="$BASE_DIR/server.pid"
 
-MODEL_URL="https://huggingface.co/HauhauCS/Qwen3.6-27B-Uncensored-HauhauCS-Balanced/resolve/main/Qwen3.6-27B-Uncensored-HauhauCS-Balanced-Q4_K_P.gguf?download=true"
-MODEL_FILENAME="Qwen3.6-27B-Uncensored.gguf"
+MODEL_URL="https://huggingface.co/unsloth/Qwen3.6-27B-MTP-GGUF/resolve/main/Qwen3.6-27B-Q4_K_M.gguf?download=true"
+MODEL_FILENAME="Qwen3.6-27B-MTP.gguf"
 
-VISION_MODEL_URL="https://huggingface.co/HauhauCS/Qwen3.6-27B-Uncensored-HauhauCS-Balanced/resolve/main/mmproj-Qwen3.6-27B-Uncensored-HauhauCS-Balanced-f16.gguf?download=true"
+VISION_MODEL_URL="https://huggingface.co/unsloth/Qwen3.6-27B-MTP-GGUF/resolve/main/mmproj-F16.gguf?download=true"
 VISION_MODEL_FILENAME="mmproj-F16.gguf"
 
-CTX_CHECKPOINTS=48
-CXT_SIZE=262144
-BATCH_SIZE=1024
+CTX_CHECKPOINTS=32
+CXT_SIZE=196608
+BATCH_SIZE=512
 PORT=8080
 API_KEY="master-api-key-enok1111"
 IDLE_TIMEOUT=1800

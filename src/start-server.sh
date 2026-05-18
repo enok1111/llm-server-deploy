@@ -38,6 +38,7 @@ nohup "$SERVER_BIN" \
   --top-k "$TOP_K" \
   --repeat-penalty "$REPEAT_PENALTY" \
   --presence-penalty "$PRESENCE_PENALTY" \
+  --spec-type draft-mtp --spec-draft-n-max 6 \
   > "$LOG_FILE" 2>&1 &
   
 echo $! > "$PID_FILE"
