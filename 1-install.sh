@@ -14,6 +14,6 @@ cd "$LLAMA_DIR" && mkdir build && cd build
 
 echo "🏗️ Compilando para NVIDIA CUDA (versión más reciente)..."
 cmake .. -DGGML_CUDA=ON -DCMAKE_CUDA_ARCHITECTURES="86"
-cmake --build . --config Release -j $(nproc)
+cmake --build . --config Release -j $(nproc) --target llama-cli llama-mtmd-cli llama-server llama-gguf-split
 
 echo "✅ Compilación de llama.cpp completada."
