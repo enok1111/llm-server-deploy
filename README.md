@@ -5,33 +5,41 @@ Despliegue optimizado del modelo **Qwen3.6 27B Heretic Uncensored** con **llama.
 ## 🚀 Uso Unificado (Unified Workflow)
 
 Este perfil está configurado para:
-*   **Modelo:** Qwen3.6-27B-Heretic-Uncensored (DavidAU)
-*   **Quant:** Q4_K_M (Di-IMatrix)
-*   **Hardware:** 1x RTX 3090/4090 (24GB VRAM)
+
+* **Modelo:** Qwen3.6-27B-Heretic-Uncensored (DavidAU)
+* **Quant:** Q4_K_M (Di-IMatrix)
+* **Hardware:** 1x RTX 3090/4090 (24GB VRAM)
 
 ### 1. Preparar Entorno (Solo una vez)
+
 ```bash
+git clone https://github.com/enok1111/llm-server-deploy.git
+cd llm-server-deploy
+git checkout qwen3.6-27b-uncesored
 ./1-install.sh
 ```
 
 ### 2. Descargar Modelos
-*   **Estándar:** `./2-download.sh`
-*   **Visión:** `./2-download.sh --vision` (Descarga el proyector mmproj)
+
+* **Estándar:** `./2-download.sh`
+* **Visión:** `./2-download.sh --vision` (Descarga el proyector mmproj)
 
 ### 3. Lanzar Servidor
+
 Arranca el servidor en segundo plano.
-*   **Estándar:** `./3-run.sh`
-*   **Visión:** `./3-run.sh --vision`
-*   **Con Perfil:** `./3-run.sh --profile coding`
-*   **Sin Pensamiento:** `./3-run.sh --no-thinking`
+
+* **Estándar:** `./3-run.sh`
+* **Visión:** `./3-run.sh --vision`
+* **Con Perfil:** `./3-run.sh --profile coding`
+* **Sin Pensamiento:** `./3-run.sh --no-thinking`
 
 ---
 
 ## ✨ Características Técnicas (Unified)
 
-- **🔄 Perfiles Inteligentes:** Configuración centralizada en `config.sh` y personalizable vía CLI.
-- **🖥️ Soporte Multi-Plataforma:** Apple Silicon (Metal) y NVIDIA (CUDA) detectados automáticamente.
-- **⚡ Descarga Acelerada:** Uso de `aria2c` con fallback a `curl`.
+* **🔄 Perfiles Inteligentes:** Configuración centralizada en `config.sh` y personalizable vía CLI.
+* **🖥️ Soporte Multi-Plataforma:** Apple Silicon (Metal) y NVIDIA (CUDA) detectados automáticamente.
+* **⚡ Descarga Acelerada:** Uso de `aria2c` con fallback a `curl`.
 
 ---
 
@@ -67,5 +75,5 @@ La configuración principal se gestiona en `config.sh`. Hemos implementado **Per
 
 ## 📊 Mantenimiento y Logs
 
-- **Ver Inferencia:** `tail -f server.log`
-- **Detener Todo:** `pkill -f llama-server`
+* **Ver Inferencia:** `tail -f server.log`
+* **Detener Todo:** `pkill -f llama-server`
