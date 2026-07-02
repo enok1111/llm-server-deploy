@@ -9,10 +9,10 @@ LLAMA_DIR="$BASE_DIR/llama.cpp"
 LOG_FILE="$BASE_DIR/server.log"
 PID_FILE="$BASE_DIR/server.pid"
 
-MODEL_URL="https://huggingface.co/unsloth/Qwen3.6-27B-MTP-GGUF/resolve/main/Qwen3.6-27B-Q4_K_M.gguf?download=true"
-MODEL_FILENAME="Qwen3.6-27B-MTP.gguf"
+MODEL_URL="https://huggingface.co/empero-ai/Qwythos-9B-Claude-Mythos-5-1M-GGUF/resolve/main/Qwythos-9B-Claude-Mythos-5-1M-MTP-Q5_K_M.gguf?download=true"
+MODEL_FILENAME="Qwythos-9B-MTP.gguf"
 
-VISION_MODEL_URL="https://huggingface.co/unsloth/Qwen3.6-27B-MTP-GGUF/resolve/main/mmproj-F16.gguf?download=true"
+VISION_MODEL_URL="https://huggingface.co/empero-ai/Qwythos-9B-Claude-Mythos-5-1M-GGUF/resolve/main/mmproj-Qwythos-9B-Claude-Mythos-5-1M-F16.gguf?download=true"
 VISION_MODEL_FILENAME="mmproj-F16.gguf"
 
 CTX_CHECKPOINTS=16
