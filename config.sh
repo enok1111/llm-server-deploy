@@ -15,9 +15,9 @@ MODEL_FILENAME="Qwythos-9B-MTP.gguf"
 VISION_MODEL_URL="https://huggingface.co/empero-ai/Qwythos-9B-Claude-Mythos-5-1M-GGUF/resolve/main/mmproj-Qwythos-9B-Claude-Mythos-5-1M-F16.gguf?download=true"
 VISION_MODEL_FILENAME="mmproj-F16.gguf"
 
-CTX_CHECKPOINTS=16
-CXT_SIZE=180224
-BATCH_SIZE=1024
+CTX_CHECKPOINTS=48
+CXT_SIZE=262144
+BATCH_SIZE=2048
 PORT=8080
 API_KEY="master-api-key-enok1111"
 IDLE_TIMEOUT=1800
